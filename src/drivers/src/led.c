@@ -66,6 +66,8 @@ static int led_polarity[] =
 };
 
 static bool isInit = 0;
+static bool isOn = 0;
+
 static uint8_t ledControlBitmask;
 static uint8_t ledLastState[LED_NUM];
 ledSwitch_t ledSwitchState;
@@ -145,6 +147,21 @@ static void ledBitmaskParamCallback(void)
   }
 }
 
+static void ledSwitch(void)
+{
+
+  if (isOn)
+  {
+    ledControlBitmask = 0b10001010;
+    ledBitmaskParamCallback();
+  }
+  else
+  {
+    ledControlBitmask = 0b10000000;
+    ledBitmaskParamCallback();
+  }
+}
+
 void ledInit()
 {
   int i;
@@ -219,6 +236,7 @@ void ledSetAll(void)
     ledSet(i, 1);
   }
 }
+
 void ledSet(led_t led, bool value)
 {
   ASSERT(led < LED_NUM);
@@ -252,5 +270,10 @@ PARAM_GROUP_START(led)
  */
 PARAM_ADD_WITH_CALLBACK(PARAM_UINT8, bitmask, &ledControlBitmask, &ledBitmaskParamCallback)
 
-PARAM_GROUP_STOP(led)
+/**
+ * @brief Control onboard LEDs, switch green light on or off
+ *
+ */
+PARAM_ADD_WITH_CALLBACK(PARAM_1BYTE, onoff, &isOn, &ledSwitch)
 
+PARAM_GROUP_STOP(led)
