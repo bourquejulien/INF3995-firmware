@@ -1,0 +1,3 @@
+obj-y += main.o
+obj-y += controller/
+obj-y += status/

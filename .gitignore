@@ -7,6 +7,7 @@ bin/*
 .pydevproject
 .settings/*
 .vscode/*
+**/.cache/*
 *~
 tools/make/config.mk
 cflie.*
@@ -15,29 +16,29 @@ tags
 *cffirmware*.so
 cffirmware.py
 
-/cf2.*
-/tag.*
-/bolt.*
+**//cf2.*
+**//tag.*
+**//bolt.*
 *.gch
 
-current_platform.mk
+**/current_platform.mk
 
-/generated/**
+**//generated/**
 **/__pycache__/**
 **/*.pyc
 
-bindings/build/*
-bindings/cffirmware_wrap.c
+**/bindings/build/*
+**/bindings/cffirmware_wrap.c
 
-docs/.jekyll-metadata
-docs/.jekyll-cache
+**/docs/.jekyll-metadata
+**/docs/.jekyll-cache
 
-docs/api/logs.md_raw
-docs/api/params.md_raw
-docs/api/log_param_doc.json
-docs/api
+**/docs/api/logs.md_raw
+**/docs/api/params.md_raw
+**/docs/api/log_param_doc.json
+**/docs/api
 
-build/
+**/build/
 # To avoid that /tools/build is ignored
 !/tools/*
 
@@ -46,3 +47,5 @@ build/
 **/*.a
 *.elf
 src/utils/src/version_gen.c
+
+**/compile_commands.json
