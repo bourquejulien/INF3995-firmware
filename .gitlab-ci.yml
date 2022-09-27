@@ -1,0 +1,22 @@
+image: docker:22.06-rc
+
+variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+
+.before: &before
+    tags:
+        - x86
+    only:
+        refs:
+            - merge_requests
+    before_script:
+        - docker info
+
+stages:
+    - build
+
+build:
+    stage: build
+    <<: *before
+    script:
+        - docker build . -f source/Dockerfile
