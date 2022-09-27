@@ -5,7 +5,7 @@
 #include "../status/status.h"
 #define DEBUG_MODULE "CONTROLLER"
 
-void receive_command(struct CommandPacketRX *RX, struct CommandPacketTX *TX)
+void receive_command(struct CommandPacketRX *RX)
 {
     if (appchannelReceiveDataPacket(RX, sizeof(*RX), APPCHANNEL_WAIT_FOREVER))
     {
@@ -15,7 +15,5 @@ void receive_command(struct CommandPacketRX *RX, struct CommandPacketTX *TX)
                 identify_drone();
                 break;
         }
-        TX->exit_code = 0;
-        appchannelSendDataPacketBlock(TX, sizeof(*TX));
     }
 } 
