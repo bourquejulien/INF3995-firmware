@@ -10,7 +10,7 @@
 
 void identify_drone() 
 {
-    DEBUG_PRINT("Identify\n");
+    DEBUG_PRINT("Starting identify routine\n");
     ledseqEnable(false);
     for (int i = 0; i < 10; i++)
     {
@@ -20,4 +20,5 @@ void identify_drone()
         vTaskDelay(M2T(250));
     }
     ledseqEnable(true);
+    DEBUG_PRINT("Identify routine successful\n");
 }
