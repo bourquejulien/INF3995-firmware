@@ -10,9 +10,8 @@
 
 void appMain() {
     struct CommandPacketRX CommandRX;
-    struct CommandPacketTX CommandTX;
 
     while(1) {
-        receive_command(&CommandRX, &CommandTX);
+        receive_command(&CommandRX);
     }
 }
