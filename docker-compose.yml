@@ -1,0 +1,8 @@
+services:
+  firmware-compiler:
+    privileged: true
+    build:
+      context: .
+      dockerfile: ./source/Dockerfile
+    volumes:
+      - "/dev:/dev"
