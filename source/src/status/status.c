@@ -14,9 +14,9 @@ void identify_drone()
     ledseqEnable(false);
     for (int i = 0; i < 10; i++)
     {
-        ledSet(LOWBAT_LED, true);
+        ledSet(LED_RED_L, true);
         vTaskDelay(M2T(250));
-        ledSet(LOWBAT_LED, false);
+        ledSet(LED_RED_L, false);
         vTaskDelay(M2T(250));
     }
     ledseqEnable(true);
