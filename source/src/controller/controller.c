@@ -17,6 +17,7 @@ int receive_command(struct CommandPacketRX *RX)
 
 enum State handle_command(struct CommandPacketRX* RX)
 {
+    vTaskDelay(M2T(1));
     switch(RX->command_id)
     {
         case 0:
@@ -35,18 +36,28 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     switch (*state)
     {
     case Idle:
-        if(RX->command_id > -1)
-        {
-            *state = handle_command(RX);
-        }
-        vTaskDelay(M2T(1));
+        *state = handle_command(RX);
         break;
     
     case Takeoff:
-        
+        start_mission(RX->command_param_value, 2);
+        *state = Exploration;
+        break;
+
+    case Exploration:
+        if(handle_command(RX) == Landing)
+        {
+            *state = Landing;
+        }
+        if(isGoTo_finished())
+        {
+            update_mission();
+        }
         break;
 
     case Landing:
+        end_mission(2);
+        *state = Idle;
         break;
 
     case Identify:

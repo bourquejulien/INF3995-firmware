@@ -3,7 +3,7 @@
 struct CommandPacketRX {
   int command_id;
   char command_param_name [8];
-  int command_param_value;
+  float command_param_value;
 } __attribute__((packed));
 
 enum State
