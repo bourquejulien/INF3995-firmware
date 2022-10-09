@@ -1,9 +1,10 @@
 #pragma once
 
-struct CommandPacketRX {
-  int command_id;
-  char command_param_name [8];
-  float command_param_value;
+struct CommandPacketRX
+{
+    int command_id;
+    char command_param_name[8];
+    float command_param_value;
 } __attribute__((packed));
 
 enum State

@@ -8,7 +8,7 @@
 
 #define DEBUG_MODULE "STATUS"
 
-void identify_drone() 
+void identify_drone()
 {
     DEBUG_PRINT("Starting identify routine\n");
     ledseqEnable(false);

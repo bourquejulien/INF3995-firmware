@@ -2,10 +2,11 @@
 
 #include <stdbool.h>
 
-struct Vec3 {
-  float x;
-  float y;
-  float z;
+struct Vec3
+{
+    float x;
+    float y;
+    float z;
 } __attribute__((packed));
 
 bool isGoTo_finished();
