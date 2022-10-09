@@ -2,6 +2,19 @@
 
 struct CommandPacketRX {
   int command_id;
+  char command_param_name [8];
+  int command_param_value;
 } __attribute__((packed));
 
-void receive_command(struct CommandPacketRX *RX);
+enum State
+{
+    Idle,
+    Identify,
+    Takeoff,
+    Exploration,
+    Landing
+};
+
+int receive_command(struct CommandPacketRX* RX);
+enum State handle_command(struct CommandPacketRX* RX);
+void handle_state(struct CommandPacketRX* RX, enum State* state);
