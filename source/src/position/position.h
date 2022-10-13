@@ -9,6 +9,6 @@ struct Vec3
     float z;
 } __attribute__((packed));
 
-struct Vec3 get_current_position();
-struct Vec3 get_next_position();
-bool override_position();
+void init_position(float trigger);
+void get_current_position(struct Vec3* position);
+bool get_next_position(struct Vec3* position, float distance, float zdistance);

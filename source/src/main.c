@@ -10,8 +10,11 @@
 #include "controller/controller.h"
 #include "debug.h"
 #include "status/status.h"
+#include "position/position.h"
 
 #define DEBUG_MODULE "MAIN"
+
+#define TRIGGER_DISTANCE 0.3
 
 void appMain()
 {
@@ -25,6 +28,8 @@ void appMain()
     {
         ASSERT_FAILED();
     }
+
+    init_position(TRIGGER_DISTANCE);
 
     while (1)
     {
