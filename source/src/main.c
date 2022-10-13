@@ -19,10 +19,9 @@ void appMain()
     enum State State = Idle;
 
     paramVarId_t idPositioningDeck = paramGetVarId("deck", "bcFlow2");
-    // TODO Add multiranger
-    // paramVarId_t idMultiranger = paramGetVarId("deck", "bcMultiranger");
+    paramVarId_t idMultiranger = paramGetVarId("deck", "bcMultiranger");
 
-    if (!paramGetUint(idPositioningDeck) /* || !paramGetUint(idMultiranger) */)
+    if (!paramGetUint(idPositioningDeck) || !paramGetUint(idMultiranger))
     {
         ASSERT_FAILED();
     }

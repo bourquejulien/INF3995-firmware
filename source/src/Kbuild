@@ -2,3 +2,5 @@ obj-y += main.o
 obj-y += controller/
 obj-y += status/
 obj-y += mission_control/
+obj-y += position/
+obj-y += obstacle_detection/

@@ -27,10 +27,16 @@ void start_mission(float z, float time)
 
 void update_mission()
 {
+    if (!isGoTo_finished())
+    {
+        return;
+    }
+
     crtpCommanderHighLevelGoTo(
-        next_moves[current_move].x, next_moves[current_move].y,
-        next_moves[current_move].z, 0, 2, true);
+            next_moves[current_move].x, next_moves[current_move].y,
+            next_moves[current_move].z, 0, 2, true);
     current_move = (current_move + 1) % move_count;
+
 }
 
 void end_mission(float time) { crtpCommanderHighLevelLand(0, time); }

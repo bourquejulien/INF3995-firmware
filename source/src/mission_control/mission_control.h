@@ -1,13 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
-
-struct Vec3
-{
-    float x;
-    float y;
-    float z;
-} __attribute__((packed));
+#include "../position/position.h"
 
 bool isGoTo_finished();
 void start_mission(float z, float time);

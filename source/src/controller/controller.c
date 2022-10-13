@@ -49,10 +49,8 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
         {
             *state = Landing;
         }
-        if (isGoTo_finished())
-        {
-            update_mission();
-        }
+
+        update_mission();
         break;
 
     case Landing:
