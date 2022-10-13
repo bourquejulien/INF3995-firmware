@@ -8,10 +8,11 @@
 
 #define DEBUG_MODULE "STATUS"
 
-void identify_drone() 
+void identify_drone()
 {
     DEBUG_PRINT("Starting identify routine\n");
     ledseqEnable(false);
+    ledClearAll();
     for (int i = 0; i < 10; i++)
     {
         ledSet(LED_RED_L, true);
