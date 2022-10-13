@@ -3,20 +3,33 @@ image: docker:22.06-rc
 variables:
     GIT_SUBMODULE_STRATEGY: recursive
 
-.before: &before
+before_script:
+    - docker info
+
+stages:
+    - build
+    - push
+
+build:
+    stage: build
     tags:
         - x86
     only:
         refs:
             - merge_requests
-    before_script:
-        - docker info
-
-stages:
-    - build
-
-build:
-    stage: build
-    <<: *before
     script:
-        - docker build . -f source/Dockerfile
+        - docker build -f source/Dockerfile .
+
+push:
+    stage: push
+    tags:
+        - x86
+    only:
+        refs:
+            - main
+    variables:
+        IMAGE_NAME: "$CI_REGISTRY_IMAGE:latest"
+    script:
+        - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+        - docker build --target build -f source/Dockerfile -t "$IMAGE_NAME" .
+        - docker push "$IMAGE_NAME"
