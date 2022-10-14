@@ -46,11 +46,11 @@ static void compute_triggered_position(float* distances, struct Vec3* position)
     }
     if (distances[UpDirection])
     {
-        position->y += normalise_distance(distances[RightDirection], distance_trigger);
+        position->z += -normalise_distance(distances[RightDirection], distance_trigger);
     }
     if (distances[DownDirection])
     {
-        position->y += normalise_distance(distances[RightDirection], z_trigger);
+        position->z += normalise_distance(distances[RightDirection], z_trigger);
     }
 }
 
@@ -91,7 +91,7 @@ bool get_next_position(struct Vec3* position, float distance, float zdistance)
         compute_triggered_position(distances, position);
 
         DEBUG_PRINT(
-            "triggered_position: (%f, %f, %f)\n", (double)position->x, (double)position->y,
+            "Triggered Position: (%f, %f, %f)\n", (double)position->x, (double)position->y,
             (double)position->z);
     }
     else

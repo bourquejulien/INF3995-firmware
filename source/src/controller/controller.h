@@ -13,9 +13,9 @@ enum State
     Identify,
     Takeoff,
     Exploration,
-    Landing
+    Landing,
+    EmergencyStop
 };
 
 int receive_command(struct CommandPacketRX* RX);
-enum State handle_command(struct CommandPacketRX* RX);
 void handle_state(struct CommandPacketRX* RX, enum State* state);

@@ -9,11 +9,12 @@
 #include "debug.h"
 
 #include "controller/controller.h"
-#include "status/status.h"
 #include "position/position.h"
+#include "status/status.h"
 
 #define DEBUG_MODULE "MAIN"
 
+// TODO Add as a config or a fraction of the random walk step
 #define TRIGGER_DISTANCE 0.4
 
 void appMain()
@@ -26,6 +27,7 @@ void appMain()
 
     if (!paramGetUint(idPositioningDeck) || !paramGetUint(idMultiranger))
     {
+        DEBUG_PRINT("Failed to initialise INF3995 module, check the decks!\n");
         ASSERT_FAILED();
     }
 
