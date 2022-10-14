@@ -6,15 +6,15 @@
 
 #include "app.h"
 #include "cfassert.h"
+#include "debug.h"
 
 #include "controller/controller.h"
-#include "debug.h"
 #include "status/status.h"
 #include "position/position.h"
 
 #define DEBUG_MODULE "MAIN"
 
-#define TRIGGER_DISTANCE 0.3
+#define TRIGGER_DISTANCE 0.4
 
 void appMain()
 {
@@ -30,6 +30,8 @@ void appMain()
     }
 
     init_position(TRIGGER_DISTANCE);
+
+    DEBUG_PRINT("INF3995 module initialized\n");
 
     while (1)
     {

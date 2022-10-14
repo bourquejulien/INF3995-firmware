@@ -1,9 +1,11 @@
 #include "obstacle_detection.h"
 #include <range.h>
 
+#include"debug.h"
+
 float get_distance(ObstacleDirection direction)
 {
-    return rangeGet(direction);
+    return rangeGet(direction) / 1000;
 }
 
 void get_distances(float distances[]) 
@@ -20,7 +22,7 @@ bool get_triggered_distances(float distances[], float trigger_distance)
     for (int direction = FrontDirection; direction <= DownDirection; ++direction)
     {
         float distance = get_distance(direction);
-
+        
         if (distance > trigger_distance)
         {
             distances[direction] = 0;

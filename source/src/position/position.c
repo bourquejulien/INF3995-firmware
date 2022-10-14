@@ -1,13 +1,11 @@
-#include <stdlib.h>
 #include <math.h>
+#include <stdlib.h>
 
+#include "debug.h"
 #include "log.h"
 
 #include "../obstacle_detection/obstacle_detection.h"
 #include "position.h"
-
-// #include "stm32f4xx.h"
-// #include "stm32f4xx_rng.h"
 
 static float distance_trigger;
 
@@ -27,7 +25,7 @@ void init_position(float trigger)
     logIdStateEstimateZ = logGetVarId("stateEstimate", "z");
 
     srand(get_distance(FrontDirection) + get_distance(BackDirection));
-} 
+}
 
 static float get_random()
 {
@@ -40,7 +38,7 @@ static float normalise_distance(float distance)
     return 1 - (distance / distance_trigger);
 }
 
-static void compute_trggered_position(float* distances, struct Vec3* position)
+static void compute_triggered_position(float* distances, struct Vec3* position)
 {
     if (distances[FrontDirection])
     {
@@ -72,27 +70,32 @@ bool get_next_position(struct Vec3* position, float distance, float zdistance)
     float distances[ObstacleDirectionEND];
     bool is_triggered = get_triggered_distances(distances, distance_trigger);
 
-    float x = get_random();
-    float y = get_random();
-
     if (is_triggered)
     {
         position->x = 0.0;
         position->y = 0.0;
         position->z = 0.0;
-        
-        compute_trggered_position(distances, position);
 
-        return true;
+        compute_triggered_position(distances, position);
+
+        DEBUG_PRINT(
+            "triggered_position: (%f, %f, %f)\n", (double)position->x,
+            (double)position->y, (double)position->z);
+    }
+    else
+    {
+        position->x = get_random();
+        position->y = get_random();
+        position->z = get_random();
     }
 
-    float base = sqrt(pow(x, 2) + pow(y, 2));
-    x = x / base;
-    y = y / base;
+    float base = sqrt(pow(position->x, 2) + pow(position->y, 2));
+    float x = position->x / base;
+    float y = position->y / base;
 
     position->x = x * distance;
     position->y = y * distance;
-    position->z = zdistance * get_random();
+    position->z = position->z * zdistance;
 
     return false;
 }

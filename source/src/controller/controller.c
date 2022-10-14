@@ -2,7 +2,6 @@
 #include "../mission_control/mission_control.h"
 #include "../status/status.h"
 #include "app_channel.h"
-#include "debug.h"
 #include <string.h>
 
 #include "FreeRTOS.h"
@@ -12,12 +11,12 @@
 
 int receive_command(struct CommandPacketRX* RX)
 {
+    DEBUG_PRINT("Command of size (%d) received\n", sizeof(*RX));
     return appchannelReceiveDataPacket(RX, sizeof(*RX), 0);
 }
 
 enum State handle_command(struct CommandPacketRX* RX)
 {
-    vTaskDelay(M2T(1));
     switch (RX->command_id)
     {
     case 0:
@@ -33,6 +32,8 @@ enum State handle_command(struct CommandPacketRX* RX)
 
 void handle_state(struct CommandPacketRX* RX, enum State* state)
 {
+    vTaskDelay(M2T(10));
+
     switch (*state)
     {
     case Idle:
