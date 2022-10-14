@@ -11,5 +11,6 @@ IndentWidth: 4
 KeepEmptyLinesAtTheStartOfBlocks: false
 NamespaceIndentation: All
 PointerAlignment: Left
+ColumnLimit: 100
 SpacesInContainerLiterals: false
 TabWidth: 4

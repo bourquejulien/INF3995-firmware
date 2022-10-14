@@ -8,6 +8,7 @@
 #include "position.h"
 
 static float distance_trigger;
+static float z_trigger;
 
 static logVarId_t logIdStateEstimateX;
 static logVarId_t logIdStateEstimateY;
@@ -17,9 +18,46 @@ static float get_x() { return logGetFloat(logIdStateEstimateX); }
 static float get_y() { return logGetFloat(logIdStateEstimateY); }
 static float get_z() { return logGetFloat(logIdStateEstimateZ); }
 
+static float get_random()
+{
+    int random = rand();
+    return (2.0 * ((random * 1.0) / RAND_MAX)) - 1.0;
+}
+
+static float normalise_distance(float distance, float trigger) { return 1 - (distance / trigger); }
+
+static void compute_triggered_position(float* distances, struct Vec3* position)
+{
+    if (distances[FrontDirection])
+    {
+        position->x += -normalise_distance(distances[FrontDirection], distance_trigger);
+    }
+    if (distances[BackDirection])
+    {
+        position->x += normalise_distance(distances[BackDirection], distance_trigger);
+    }
+    if (distances[LeftDirection])
+    {
+        position->y += -normalise_distance(distances[LeftDirection], distance_trigger);
+    }
+    if (distances[RightDirection])
+    {
+        position->y += normalise_distance(distances[RightDirection], distance_trigger);
+    }
+    if (distances[UpDirection])
+    {
+        position->y += normalise_distance(distances[RightDirection], distance_trigger);
+    }
+    if (distances[DownDirection])
+    {
+        position->y += normalise_distance(distances[RightDirection], z_trigger);
+    }
+}
+
 void init_position(float trigger)
 {
     distance_trigger = trigger;
+    z_trigger = 0;
     logIdStateEstimateX = logGetVarId("stateEstimate", "x");
     logIdStateEstimateY = logGetVarId("stateEstimate", "y");
     logIdStateEstimateZ = logGetVarId("stateEstimate", "z");
@@ -27,35 +65,9 @@ void init_position(float trigger)
     srand(get_distance(FrontDirection) + get_distance(BackDirection));
 }
 
-static float get_random()
+void start_position(float z_trigger)
 {
-    int random = rand();
-    return (2.0 * ((random * 1.0) / RAND_MAX)) - 1.0;
-}
-
-static float normalise_distance(float distance)
-{
-    return 1 - (distance / distance_trigger);
-}
-
-static void compute_triggered_position(float* distances, struct Vec3* position)
-{
-    if (distances[FrontDirection])
-    {
-        position->x += -normalise_distance(distances[FrontDirection]);
-    }
-    if (distances[BackDirection])
-    {
-        position->x += normalise_distance(distances[BackDirection]);
-    }
-    if (distances[LeftDirection])
-    {
-        position->y += -normalise_distance(distances[LeftDirection]);
-    }
-    if (distances[RightDirection])
-    {
-        position->y += normalise_distance(distances[RightDirection]);
-    }
+    z_trigger = z_trigger;
 }
 
 void get_current_position(struct Vec3* position)
@@ -68,7 +80,7 @@ void get_current_position(struct Vec3* position)
 bool get_next_position(struct Vec3* position, float distance, float zdistance)
 {
     float distances[ObstacleDirectionEND];
-    bool is_triggered = get_triggered_distances(distances, distance_trigger);
+    bool is_triggered = get_triggered_distances(distances, distance_trigger, z_trigger);
 
     if (is_triggered)
     {
@@ -79,8 +91,8 @@ bool get_next_position(struct Vec3* position, float distance, float zdistance)
         compute_triggered_position(distances, position);
 
         DEBUG_PRINT(
-            "triggered_position: (%f, %f, %f)\n", (double)position->x,
-            (double)position->y, (double)position->z);
+            "triggered_position: (%f, %f, %f)\n", (double)position->x, (double)position->y,
+            (double)position->z);
     }
     else
     {

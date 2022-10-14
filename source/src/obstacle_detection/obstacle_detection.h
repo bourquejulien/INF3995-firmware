@@ -3,15 +3,17 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef enum {
-    FrontDirection=0,
+typedef enum
+{
+    FrontDirection = 0,
     BackDirection,
     LeftDirection,
     RightDirection,
+    UpDirection,
     DownDirection,
     ObstacleDirectionEND
 } ObstacleDirection;
 
 float get_distance(ObstacleDirection direction);
 void get_distances(float distances[]);
-bool get_triggered_distances(float distances[], float trigger_distance);
+bool get_triggered_distances(float distances[], float trigger_distance, float z_trigger);
