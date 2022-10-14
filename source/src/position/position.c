@@ -20,6 +20,7 @@ static float get_z() { return logGetFloat(logIdStateEstimateZ); }
 
 static float get_random()
 {
+    // TODO Improve logic
     int random = rand();
     return (2.0 * ((random * 1.0) / RAND_MAX)) - 1.0;
 }

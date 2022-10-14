@@ -62,6 +62,7 @@ void update_mission()
         "Position change: (%f, %f, %f)\n", (double)position.x, (double)position.y,
         (double)position.z);
 
+    // TODO Handle Up and Down obstacles detection
     crtpCommanderHighLevelGoTo(position.x, position.y, position.z, 0, update_time, true);
 }
 
