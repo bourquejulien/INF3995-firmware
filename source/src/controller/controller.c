@@ -1,6 +1,7 @@
 #include "controller.h"
 #include "../mission_control/mission_control.h"
 #include "../status/status.h"
+
 #include "app_channel.h"
 #include "debug.h"
 #include <string.h>
@@ -15,9 +16,8 @@ int receive_command(struct CommandPacketRX* RX)
     return appchannelReceiveDataPacket(RX, sizeof(*RX), 0);
 }
 
-enum State handle_command(struct CommandPacketRX* RX)
+static enum State get_state(struct CommandPacketRX* RX)
 {
-    vTaskDelay(M2T(1));
     switch (RX->command_id)
     {
     case 0:
@@ -26,6 +26,8 @@ enum State handle_command(struct CommandPacketRX* RX)
         return Takeoff;
     case 2:
         return Landing;
+    case 3:
+        return EmergencyStop;
     default:
         return Idle;
     }
@@ -33,40 +35,55 @@ enum State handle_command(struct CommandPacketRX* RX)
 
 void handle_state(struct CommandPacketRX* RX, enum State* state)
 {
+    vTaskDelay(M2T(10));
+
     switch (*state)
     {
     case Idle:
-        *state = handle_command(RX);
+    {
+        *state = get_state(RX);
         break;
-
+    }
     case Takeoff:
-        start_mission(RX->command_param_value, 2);
-        *state = Exploration;
+    {
+        if (start_mission(RX->command_param_value))
+        {
+            *state = Exploration;
+        }
         break;
-
+    }
     case Exploration:
-        if (handle_command(RX) == Landing)
+    {
+        int next_state = get_state(RX);
+        if (next_state == Landing || next_state == EmergencyStop)
         {
-            *state = Landing;
+            *state = next_state;
         }
-        if (isGoTo_finished())
-        {
-            update_mission();
-        }
+        update_mission();
         break;
-
+    }
     case Landing:
+    {
         end_mission(2);
         *state = Idle;
         break;
-
+    }
+    case EmergencyStop:
+    {
+        force_end_mission();
+        *state = Idle;
+        break;
+    }
     case Identify:
+    {
         identify_drone();
         *state = Idle;
         break;
-
+    }
     default:
+    {
         *state = Idle;
         break;
+    }
     }
 }

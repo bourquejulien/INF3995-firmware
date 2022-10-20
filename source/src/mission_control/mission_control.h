@@ -2,14 +2,8 @@
 
 #include <stdbool.h>
 
-struct Vec3
-{
-    float x;
-    float y;
-    float z;
-} __attribute__((packed));
-
 bool isGoTo_finished();
-void start_mission(float z, float time);
+bool start_mission(float distance);
 void update_mission();
-void end_mission(float time);
+void end_mission();
+void force_end_mission();
