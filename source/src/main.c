@@ -7,6 +7,7 @@
 #include "app.h"
 #include "cfassert.h"
 #include "debug.h"
+#include "usec_time.h"
 
 #include "controller/controller.h"
 #include "position/position.h"
@@ -33,6 +34,9 @@ void appMain()
 
     init_position(TRIGGER_DISTANCE);
 
+    initUsecTimer();
+    uint64_t  last_clock = usecTimestamp();
+
     DEBUG_PRINT("INF3995 module initialized\n");
 
     while (1)
@@ -43,5 +47,13 @@ void appMain()
         }
 
         handle_state(&CommandRX, &State);
+
+        uint64_t time_since_update_ms = ((usecTimestamp() - last_clock) / 1000);
+
+        if(time_since_update_ms > 100)
+        {
+            last_clock = usecTimestamp();
+            update_status(&State);
+        }
     }
 }
