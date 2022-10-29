@@ -14,6 +14,7 @@ struct MapData
 {
     uint8_t type;
     float distances[ObstacleDirectionEND];
+    struct Vec3 position;
 } __attribute__((packed));
 
 void update_telemetrics_data(int state);
