@@ -3,12 +3,13 @@
 
 #include "debug.h"
 #include "log.h"
+#include "param.h"
 
 #include "../obstacle_detection/obstacle_detection.h"
 #include "position.h"
 
-static float distance_trigger;
-static float z_trigger;
+static float distance_trigger = 0.5;
+static float z_trigger = 0.0;
 
 static logVarId_t logIdStateEstimateX;
 static logVarId_t logIdStateEstimateY;
@@ -55,10 +56,8 @@ static void compute_triggered_position(float* distances, struct Vec3* position)
     }
 }
 
-void init_position(float trigger)
+void init_position()
 {
-    distance_trigger = trigger;
-    z_trigger = 0;
     logIdStateEstimateX = logGetVarId("stateEstimate", "x");
     logIdStateEstimateY = logGetVarId("stateEstimate", "y");
     logIdStateEstimateZ = logGetVarId("stateEstimate", "z");
@@ -112,3 +111,10 @@ bool get_next_position(struct Vec3* position, float distance, float zdistance)
 
     return false;
 }
+
+PARAM_GROUP_START(app)
+
+PARAM_ADD(PARAM_FLOAT, distance_trigger, &distance_trigger)
+PARAM_ADD(PARAM_FLOAT, z_trigger, &z_trigger)
+
+PARAM_GROUP_STOP(app)

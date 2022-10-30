@@ -15,8 +15,7 @@
 
 #define DEBUG_MODULE "MAIN"
 
-// TODO Add as a config or a fraction of the random walk step
-#define TRIGGER_DISTANCE 0.4
+static float telemetric_update = 500;
 
 void appMain()
 {
@@ -32,7 +31,7 @@ void appMain()
         ASSERT_FAILED();
     }
 
-    init_position(TRIGGER_DISTANCE);
+    init_position();
 
     initUsecTimer();
     uint64_t  last_clock = usecTimestamp();
@@ -50,10 +49,14 @@ void appMain()
 
         uint64_t time_since_update_ms = ((usecTimestamp() - last_clock) / 1000);
 
-        if(time_since_update_ms > 100)
+        if(time_since_update_ms > telemetric_update)
         {
             last_clock = usecTimestamp();
             update_status(&State);
         }
     }
 }
+
+PARAM_GROUP_START(app)
+PARAM_ADD(PARAM_FLOAT, telemetric_update, &telemetric_update)
+PARAM_GROUP_STOP(app)
