@@ -13,7 +13,7 @@ struct Telemetrics
 struct MapData
 {
     uint8_t type;
-    float distances[ObstacleDirectionEND];
+    float distances[UpDirection];
     struct Vec3 position;
 } __attribute__((packed));
 

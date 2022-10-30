@@ -23,12 +23,11 @@ void update_telemetrics_map()
 
     data.type = 1;
 
-    for (int i = 0; i < ObstacleDirectionEND; i++)
+    for (int i = 0; i < UpDirection; i++)
     {
         data.distances[i] = distances[i];
     }
 
-    get_current_position(&data.position);
-    
+    get_current_position(&data.position);    
     appchannelSendDataPacket(&data, sizeof(data));
 }
