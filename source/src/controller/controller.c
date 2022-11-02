@@ -1,6 +1,7 @@
 #include "controller.h"
 #include "../mission_control/mission_control.h"
 #include "../status/status.h"
+#include "../telemetrics/telemetrics.h"
 
 #include "app_channel.h"
 #include "debug.h"
@@ -86,4 +87,10 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
         break;
     }
     }
+}
+
+void update_status(enum State* state)
+{
+    update_telemetrics_data(*state);
+    update_telemetrics_map();
 }
