@@ -49,3 +49,5 @@ cffirmware.py
 src/utils/src/version_gen.c
 
 **/compile_commands.json
+
+.idea/
