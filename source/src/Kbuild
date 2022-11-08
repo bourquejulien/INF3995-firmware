@@ -4,4 +4,5 @@ obj-y += status/
 obj-y += mission_control/
 obj-y += position/
 obj-y += obstacle_detection/
+obj-y += crash_detection/
 obj-y += telemetrics/
