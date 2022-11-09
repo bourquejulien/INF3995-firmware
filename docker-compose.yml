@@ -3,6 +3,7 @@ services:
     privileged: true
     build:
       context: .
-      dockerfile: ./source/Dockerfile
+      dockerfile: ./Dockerfile
+      target: load
     volumes:
       - "/dev:/dev"
