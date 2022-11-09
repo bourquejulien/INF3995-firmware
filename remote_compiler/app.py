@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 
 import grpc
@@ -11,6 +13,8 @@ from src.controller import CompilerController
 from src.env_handler import EnvHandler
 
 MAX_WORKERS = 5
+PORT_ENV = "REMOTE_COMPILER_PORT"
+DEFAULT_PORT = 5003
 
 logger = None
 env_Handler = None
@@ -31,7 +35,8 @@ def setup_grpc(port, max_workers):
 
 
 def main():
-    port = sys.argv[1]
+    port = os.environ.get(PORT_ENV)
+    port = port if port is not None else DEFAULT_PORT
     setup_dependencies()
     server = setup_grpc(port, MAX_WORKERS)
     server.start()
