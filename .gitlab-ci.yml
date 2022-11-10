@@ -18,7 +18,7 @@ build:
         refs:
             - merge_requests
     script:
-        - docker build -f source/Dockerfile .
+        - docker build -f Dockerfile .
 
 push:
     stage: push
