@@ -18,6 +18,10 @@ class CompilerController(compiler_pb2_grpc.CompilerServicer):
     def EndSession(self, compiler_request, context):
         self._env_handler.remove(compiler_request.id)
         return compiler_pb2.CompilerReply(id=compiler_request.id)
+    
+    def Get(self, edit_request, context):
+        data = self._env_handler.get(edit_request.id, edit_request.path)
+        return compiler_pb2.DataBlock(data=data)
 
     def Edit(self, edit_request, context):
         self._env_handler.edit(edit_request.id, edit_request.path, edit_request.file)

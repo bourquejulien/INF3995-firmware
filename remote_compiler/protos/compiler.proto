@@ -6,6 +6,7 @@ service Compiler {
   rpc StartSession (StartRequest) returns (CompilerReply) {}
   rpc EndSession (CompilerRequest) returns (CompilerReply) {}
   rpc Edit (EditRequest) returns (CompilerReply) {}
+  rpc Get (GetRequest) returns (DataBlock) {}
   rpc Build (CompilerRequest) returns (stream DataBlock) {}
 }
 
@@ -24,6 +25,11 @@ message EditRequest {
   string id = 1;
   string path = 2;
   bytes file = 3;
+}
+
+message GetRequest {
+  string id = 1;
+  string path = 2;
 }
 
 message DataBlock {
