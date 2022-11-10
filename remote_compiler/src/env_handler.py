@@ -81,7 +81,7 @@ class EnvHandler:
             shutil.rmtree(build_path)
             raise Exception("Build error")
 
-        with open(os.path.join(build_path, "build", "cf2.elf"), mode='rb') as file:
+        with open(os.path.join(build_path, "build", "cf2.bin"), mode='rb') as file:
             while data:= file.read(block_size):
                 yield data
 
