@@ -26,6 +26,12 @@ static float get_random()
     return (2.0 * ((random * 1.0) / RAND_MAX)) - 1.0;
 }
 
+static float random_range(float min, float max)
+{
+    float scale = rand() / (float) RAND_MAX;
+    return min + scale * ( max - min );
+}
+
 static float normalise_distance(float distance, float trigger) { return 1 - (distance / trigger); }
 
 static void compute_triggered_position(float* distances, struct Vec3* position)
@@ -46,14 +52,14 @@ static void compute_triggered_position(float* distances, struct Vec3* position)
     {
         position->y += normalise_distance(distances[RightDirection], distance_trigger);
     }
-    if (distances[UpDirection])
-    {
-        position->z += -normalise_distance(distances[RightDirection], distance_trigger);
-    }
-    if (distances[DownDirection])
-    {
-        position->z += normalise_distance(distances[RightDirection], z_trigger);
-    }
+    // if (distances[UpDirection])
+    // {
+    //     position->z += -normalise_distance(distances[UpDirection], distance_trigger);
+    // }
+    // if (distances[DownDirection])
+    // {
+    //     position->z += normalise_distance(distances[DownDirection], z_trigger);
+    // }
 }
 
 void init_position()
@@ -110,6 +116,52 @@ bool get_next_position(struct Vec3* position, float distance, float zdistance)
     position->z = position->z * zdistance;
 
     return false;
+}
+
+float get_angle(float* distances)
+{
+    int wallsClose = 0;
+    float X = 0.0f;
+    float Y = 0.0f;
+
+    if (distances[FrontDirection] && distances[FrontDirection] <= distance_trigger)
+    {
+        X -= 1.0f / distances[FrontDirection];
+        wallsClose++;
+    }
+    if (distances[BackDirection] && distances[BackDirection] <= distance_trigger)
+    {
+        X += 1.0f / distances[BackDirection];
+        wallsClose++;
+    }
+    if (distances[LeftDirection] && distances[LeftDirection] <= distance_trigger)
+    {
+        Y -= 1.0f / distances[LeftDirection];
+        wallsClose++;
+    }
+    if (distances[RightDirection] && distances[RightDirection] <= distance_trigger)
+    {
+        Y += 1.0f / distances[RightDirection];
+        wallsClose++;
+    }
+
+    
+    if (wallsClose == 0) {
+        // If no walls are close, i.e. the drone just took off, choose a completely random direction 
+        return random_range(0.0f, M_PI * 2.0f);
+    } else {
+        // Else, find the angle of the vector above
+        float angleRange = M_PI_4;
+        float rangeCenter = atan2(Y, X);
+        return random_range(rangeCenter - angleRange, rangeCenter + angleRange);
+    }
+
+    // m_server.AddLog("Updating position", "INFO");
+
+    // m_nextPosition = m_pcPos->GetReading().Position;
+
+    // m_currentAction = Action::Move;
+    // m_moveAngle = m_pcRNG->Uniform(range);
 }
 
 PARAM_GROUP_START(app)
