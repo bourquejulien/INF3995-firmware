@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package compiler;
+
+service Compiler {
+  rpc StartSession (StartRequest) returns (CompilerReply) {}
+  rpc EndSession (CompilerRequest) returns (CompilerReply) {}
+  rpc Edit (EditRequest) returns (CompilerReply) {}
+  rpc Get (GetRequest) returns (DataBlock) {}
+  rpc Build (CompilerRequest) returns (stream DataBlock) {}
+}
+
+message StartRequest {
+}
+
+message CompilerRequest {
+  string id = 1;
+}
+
+message CompilerReply {
+  string id = 1;
+}
+
+message EditRequest {
+  string id = 1;
+  string path = 2;
+  bytes file = 3;
+}
+
+message GetRequest {
+  string id = 1;
+  string path = 2;
+}
+
+message DataBlock {
+  bytes data = 1;
+}
