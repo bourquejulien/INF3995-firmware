@@ -21,7 +21,6 @@ static float distance_trigger_z = 0;
 
 static float walk_distance;
 
-static int choose_angle_counter = 0;
 
 bool isGoTo_finished() { return crtpCommanderHighLevelIsTrajectoryFinished(); }
 
@@ -55,8 +54,6 @@ void update_mission()
 {
     if (isGoTo_finished())
     {
-        choose_angle_counter = 100;
-
         struct Vec3 position;
         get_next_position(&position, walk_distance, 0);
 
@@ -65,8 +62,6 @@ void update_mission()
         // TODO Handle Up and Down obstacles detection
         crtpCommanderHighLevelGoTo(position.x, position.y, position.z, 0, update_time, true);
     }
-    
-    choose_angle_counter--;
 
 }
 
