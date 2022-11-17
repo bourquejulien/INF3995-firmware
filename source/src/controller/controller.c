@@ -9,6 +9,7 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "supervisor.h"
 
 #define DEBUG_MODULE "CONTROLLER"
 
@@ -55,6 +56,12 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     }
     case Exploration:
     {
+        if (supervisorIsTumbled())
+        {
+            *state = Crashed;
+            break;
+        }
+
         int next_state = get_state(RX);
         if (next_state == Landing || next_state == EmergencyStop)
         {
@@ -79,6 +86,14 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     {
         identify_drone();
         *state = Idle;
+        break;
+    }
+    case Crashed:
+    {
+        force_end_mission();
+
+        // qqchose
+        // attendre nouvel état, si nouvel état arrive, deset état crashed
         break;
     }
     default:
