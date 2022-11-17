@@ -14,7 +14,8 @@ enum State
     Takeoff,
     Exploration,
     Landing,
-    EmergencyStop
+    EmergencyStop,
+    Crashed,
 };
 
 int receive_command(struct CommandPacketRX* RX);

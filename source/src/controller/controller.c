@@ -20,6 +20,11 @@ int receive_command(struct CommandPacketRX* RX)
 
 static enum State get_state(struct CommandPacketRX* RX)
 {
+    if (supervisorIsTumbled())
+    {
+        return Crashed;
+    }
+
     switch (RX->command_id)
     {
     case 0:
@@ -30,6 +35,8 @@ static enum State get_state(struct CommandPacketRX* RX)
         return Landing;
     case 3:
         return EmergencyStop;
+    case 4:
+        return Crashed;
     default:
         return Idle;
     }
@@ -56,12 +63,6 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     }
     case Exploration:
     {
-        if (supervisorIsTumbled())
-        {
-            *state = Crashed;
-            break;
-        }
-
         int next_state = get_state(RX);
         if (next_state == Landing || next_state == EmergencyStop)
         {
