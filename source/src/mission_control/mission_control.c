@@ -52,17 +52,17 @@ bool start_mission(float distance)
 
 void update_mission()
 {
-    if (isGoTo_finished())
+    if (!isGoTo_finished())
     {
-        struct Vec3 position;
-        get_next_position(&position, walk_distance, 0);
-
-        DEBUG_PRINT("GOTO: (%f, %f, %f)\n", (double)position.x, (double)position.y, (double)position.z);
-
-        // TODO Handle Up and Down obstacles detection
-        crtpCommanderHighLevelGoTo(position.x, position.y, position.z, 0, update_time, true);
+        return;
     }
 
+    struct Vec3 position;
+    get_next_position(&position, walk_distance, 0);
+
+    DEBUG_PRINT("GOTO: (%f, %f, %f)\n", (double)position.x, (double)position.y, (double)position.z);
+
+    crtpCommanderHighLevelGoTo(position.x, position.y, position.z, 0, update_time, true);
 }
 
 void end_mission()

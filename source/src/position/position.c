@@ -26,6 +26,46 @@ static float random_range(float min, float max)
     return min + scale * ( max - min );
 }
 
+static float get_angle(float* distances)
+{
+    int wallsClose = 0;
+    float X = 0.0;
+    float Y = 0.0;
+
+    if (distances[FrontDirection] && distances[FrontDirection] <= distance_trigger)
+    {
+        X -= 1.0f / distances[FrontDirection];
+        wallsClose++;
+    }
+    if (distances[BackDirection] && distances[BackDirection] <= distance_trigger)
+    {
+        X += 1.0f / distances[BackDirection];
+        wallsClose++;
+    }
+    if (distances[LeftDirection] && distances[LeftDirection] <= distance_trigger)
+    {
+        Y -= 1.0f / distances[LeftDirection];
+        wallsClose++;
+    }
+    if (distances[RightDirection] && distances[RightDirection] <= distance_trigger)
+    {
+        Y += 1.0f / distances[RightDirection];
+        wallsClose++;
+    }
+
+    
+    if (wallsClose == 0) 
+    {
+        // If no walls are close, i.e. the drone just took off, choose a completely random direction 
+        return random_range(0.0, M_PI * 2.0);
+    } else 
+    {
+        // Else, find the angle of the vector above
+        float angleRange = M_PI_4;
+        float rangeCenter = atan2(Y, X);
+        return random_range(rangeCenter - angleRange, rangeCenter + angleRange);
+    }
+}
 
 void init_position()
 {
@@ -67,45 +107,6 @@ bool get_next_position(struct Vec3* position, float distance, float zdistance)
     position->z = position->z * zdistance;
 
     return false;
-}
-
-float get_angle(float* distances)
-{
-    int wallsClose = 0;
-    float X = 0.0;
-    float Y = 0.0;
-
-    if (distances[FrontDirection] && distances[FrontDirection] <= distance_trigger)
-    {
-        X -= 1.0f / distances[FrontDirection];
-        wallsClose++;
-    }
-    if (distances[BackDirection] && distances[BackDirection] <= distance_trigger)
-    {
-        X += 1.0f / distances[BackDirection];
-        wallsClose++;
-    }
-    if (distances[LeftDirection] && distances[LeftDirection] <= distance_trigger)
-    {
-        Y -= 1.0f / distances[LeftDirection];
-        wallsClose++;
-    }
-    if (distances[RightDirection] && distances[RightDirection] <= distance_trigger)
-    {
-        Y += 1.0f / distances[RightDirection];
-        wallsClose++;
-    }
-
-    
-    if (wallsClose == 0) {
-        // If no walls are close, i.e. the drone just took off, choose a completely random direction 
-        return random_range(0.0, M_PI * 2.0);
-    } else {
-        // Else, find the angle of the vector above
-        float angleRange = M_PI_4;
-        float rangeCenter = atan2(Y, X);
-        return random_range(rangeCenter - angleRange, rangeCenter + angleRange);
-    }
 }
 
 PARAM_GROUP_START(app)
