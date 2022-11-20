@@ -16,6 +16,7 @@ void enable_status()
 
 void disable_status()
 {
+    ledClearAll();
     ledseqEnable(true);
 }
 

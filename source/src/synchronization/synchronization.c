@@ -68,6 +68,7 @@ static void set_status()
     if (is_enabled)
     {
         enable_status();
+        set_color(StatusBlue);
     }
     else
     {
