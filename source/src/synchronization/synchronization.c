@@ -117,7 +117,6 @@ void synchronize_drones()
         last_clock = usecTimestamp();
         synchronize();
     }
-
 }
 
 PARAM_GROUP_START(app)
