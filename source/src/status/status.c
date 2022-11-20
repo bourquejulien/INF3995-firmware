@@ -8,11 +8,26 @@
 
 #define DEBUG_MODULE "STATUS"
 
+void enable_status()
+{
+    ledseqEnable(false);
+    ledClearAll();
+}
+
+void disable_status()
+{
+    ledseqEnable(true);
+}
+
+void set_color(StatusColor color)
+{
+    ledSet(color, true);
+}
+
 void identify_drone()
 {
     DEBUG_PRINT("Starting identify routine\n");
-    ledseqEnable(false);
-    ledClearAll();
+    enable_status();
     for (int i = 0; i < 10; i++)
     {
         ledSet(LED_RED_L, true);
@@ -20,6 +35,6 @@ void identify_drone()
         ledSet(LED_RED_L, false);
         vTaskDelay(M2T(250));
     }
-    ledseqEnable(true);
+    disable_status();
     DEBUG_PRINT("Identify routine successful\n");
 }
