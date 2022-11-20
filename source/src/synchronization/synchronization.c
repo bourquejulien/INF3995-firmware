@@ -2,6 +2,7 @@
 #include "../status/status.h"
 #include "../position/position.h"
 
+#include <string.h>
 #include <float.h>
 #include <stdbool.h>
 
