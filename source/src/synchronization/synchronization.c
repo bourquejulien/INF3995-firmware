@@ -3,10 +3,13 @@
 #include "../position/position.h"
 
 #include <float.h>
+#include <stdbool.h>
 
 #include "debug.h"
+#include "param.h"
 #include "radiolink.h"
 #include "configblock.h"
+#include "usec_time.h"
 
 typedef struct
 {
@@ -14,6 +17,10 @@ typedef struct
     float distance;
 } DistanceData;
 
+static bool is_enabled;
+static float sync_update_time;
+
+static float last_clock;
 static DistanceData min_data;
 static DistanceData max_data;
 
@@ -55,28 +62,25 @@ static uint8_t get_id()
     return (uint8_t)(address & 0xff);
 }
 
-void init_synchronization()
+static void set_status()
 {
-    p2pRegisterCB(data_handler);
-
-    min_data.id = 0;
-    min_data.distance = FLT_MAX;
-    max_data.id = 0;
-    max_data.distance = 0;
+    if (is_enabled)
+    {
+        enable_status();
+    }
+    else
+    {
+        disable_status();
+    }
 }
 
-void enable_synchronization()
+static void synchronize()
 {
-    enable_status();
-}
+    if (!is_enabled)
+    {
+        return;
+    }
 
-void disable_synchronization()
-{
-    disable_status();
-}
-
-void synchronize()
-{
     static DistanceData data;
     data.distance = get_distance_from_start();
     data.id = get_id();
@@ -88,3 +92,34 @@ void synchronize()
     memcpy(&packet.data, &data, packet.size);
     radiolinkSendP2PPacketBroadcast(&packet);
 }
+
+void init_synchronization()
+{
+    p2pRegisterCB(data_handler);
+
+    is_enabled = false;
+    sync_update_time = 2000;
+
+    last_clock = usecTimestamp();
+
+    min_data.id = 0;
+    min_data.distance = FLT_MAX;
+    max_data.id = 0;
+    max_data.distance = 0;
+}
+
+void synchronize_drones()
+{
+    uint64_t time_since_update_ms = ((usecTimestamp() - last_clock) / 1000);
+    if(time_since_update_ms > sync_update_time)
+    {
+        last_clock = usecTimestamp();
+        synchronize();
+    }
+
+}
+
+PARAM_GROUP_START(app)
+PARAM_ADD_WITH_CALLBACK(PARAM_1BYTE, sync_enabled, &is_enabled, set_status)
+PARAM_ADD(PARAM_FLOAT, sync_update, &sync_update_time)
+PARAM_GROUP_STOP(app)
