@@ -14,7 +14,7 @@ from src.env_handler import EnvHandler
 
 MAX_WORKERS = 5
 PORT_ENV = "REMOTE_COMPILER_PORT"
-DEFAULT_PORT = 5003
+DEFAULT_PORT = "5003"
 
 logger = None
 env_Handler = None
