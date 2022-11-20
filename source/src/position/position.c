@@ -29,27 +29,27 @@ static float random_range(float min, float max)
 static float get_angle(float* distances)
 {
     int wallsClose = 0;
-    float X = 0.0;
-    float Y = 0.0;
+    float x = 0.0;
+    float y = 0.0;
 
     if (distances[FrontDirection] && distances[FrontDirection] <= distance_trigger)
     {
-        X -= 1.0f / distances[FrontDirection];
+        x -= 1.0f / distances[FrontDirection];
         wallsClose++;
     }
     if (distances[BackDirection] && distances[BackDirection] <= distance_trigger)
     {
-        X += 1.0f / distances[BackDirection];
+        x += 1.0f / distances[BackDirection];
         wallsClose++;
     }
     if (distances[LeftDirection] && distances[LeftDirection] <= distance_trigger)
     {
-        Y -= 1.0f / distances[LeftDirection];
+        y -= 1.0f / distances[LeftDirection];
         wallsClose++;
     }
     if (distances[RightDirection] && distances[RightDirection] <= distance_trigger)
     {
-        Y += 1.0f / distances[RightDirection];
+        y += 1.0f / distances[RightDirection];
         wallsClose++;
     }
 
@@ -62,7 +62,7 @@ static float get_angle(float* distances)
     {
         // Else, find the angle of the vector above
         float angleRange = M_PI_4;
-        float rangeCenter = atan2(Y, X);
+        float rangeCenter = atan2(y, x);
         return random_range(rangeCenter - angleRange, rangeCenter + angleRange);
     }
 }
