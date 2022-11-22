@@ -10,6 +10,7 @@
 
 static float distance_trigger = 0.5;
 static float z_trigger = 0.0;
+static float angle = 0.0;
 
 static logVarId_t logIdStateEstimateX;
 static logVarId_t logIdStateEstimateY;
@@ -21,40 +22,50 @@ static float get_z() { return logGetFloat(logIdStateEstimateZ); }
 
 static struct Vec3 initial_position;
 
-static float get_random()
+static float random_range(float min, float max)
 {
-    // TODO Improve logic
-    int random = rand();
-    return (2.0 * ((random * 1.0) / RAND_MAX)) - 1.0;
+    float scale = rand() / (float) RAND_MAX;
+    return min + scale * ( max - min );
 }
 
-static float normalise_distance(float distance, float trigger) { return 1 - (distance / trigger); }
-
-static void compute_triggered_position(float* distances, struct Vec3* position)
+static float get_angle(float* distances)
 {
-    if (distances[FrontDirection])
+    int wallsClose = 0;
+    float x = 0.0;
+    float y = 0.0;
+
+    if (distances[FrontDirection] && distances[FrontDirection] <= distance_trigger)
     {
-        position->x += -normalise_distance(distances[FrontDirection], distance_trigger);
+        x -= 1.0f / distances[FrontDirection];
+        wallsClose++;
     }
-    if (distances[BackDirection])
+    if (distances[BackDirection] && distances[BackDirection] <= distance_trigger)
     {
-        position->x += normalise_distance(distances[BackDirection], distance_trigger);
+        x += 1.0f / distances[BackDirection];
+        wallsClose++;
     }
-    if (distances[LeftDirection])
+    if (distances[LeftDirection] && distances[LeftDirection] <= distance_trigger)
     {
-        position->y += -normalise_distance(distances[LeftDirection], distance_trigger);
+        y -= 1.0f / distances[LeftDirection];
+        wallsClose++;
     }
-    if (distances[RightDirection])
+    if (distances[RightDirection] && distances[RightDirection] <= distance_trigger)
     {
-        position->y += normalise_distance(distances[RightDirection], distance_trigger);
+        y += 1.0f / distances[RightDirection];
+        wallsClose++;
     }
-    if (distances[UpDirection])
+
+    
+    if (wallsClose == 0) 
     {
-        position->z += -normalise_distance(distances[RightDirection], distance_trigger);
-    }
-    if (distances[DownDirection])
+        // If no walls are close, i.e. the drone just took off, choose a completely random direction 
+        return random_range(0.0, M_PI * 2.0);
+    } else 
     {
-        position->z += normalise_distance(distances[RightDirection], z_trigger);
+        // Else, find the angle of the vector above
+        float angleRange = M_PI_4;
+        float rangeCenter = atan2(y, x);
+        return random_range(rangeCenter - angleRange, rangeCenter + angleRange);
     }
 }
 
@@ -97,31 +108,17 @@ bool get_next_position(struct Vec3* position, float distance, float zdistance)
     float distances[ObstacleDirectionEND];
     bool is_triggered = get_triggered_distances(distances, distance_trigger, z_trigger);
 
+    position->x = 0.0;
+    position->y = 0.0;
+    position->z = 0.0;
+
     if (is_triggered)
     {
-        position->x = 0.0;
-        position->y = 0.0;
-        position->z = 0.0;
-
-        compute_triggered_position(distances, position);
-
-        DEBUG_PRINT(
-            "Triggered Position: (%f, %f, %f)\n", (double)position->x, (double)position->y,
-            (double)position->z);
-    }
-    else
-    {
-        position->x = get_random();
-        position->y = get_random();
-        position->z = get_random();
+        angle = get_angle(distances);
     }
 
-    float base = sqrt(pow(position->x, 2) + pow(position->y, 2));
-    float x = position->x / base;
-    float y = position->y / base;
-
-    position->x = x * distance;
-    position->y = y * distance;
+    position->x = (float)cos(angle) * distance;
+    position->y = (float)sin(angle) * distance;
     position->z = position->z * zdistance;
 
     return false;

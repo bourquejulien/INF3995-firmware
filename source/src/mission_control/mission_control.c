@@ -11,6 +11,7 @@
 #include "task.h"
 
 #include "../position/position.h"
+#include "../obstacle_detection/obstacle_detection.h"
 
 static float update_time = 0;
 static float default_z = 0;
@@ -19,6 +20,7 @@ static float distance_trigger = 0;
 static float distance_trigger_z = 0;
 
 static float walk_distance;
+
 
 bool isGoTo_finished() { return crtpCommanderHighLevelIsTrajectoryFinished(); }
 
@@ -60,7 +62,6 @@ void update_mission()
 
     DEBUG_PRINT("GOTO: (%f, %f, %f)\n", (double)position.x, (double)position.y, (double)position.z);
 
-    // TODO Handle Up and Down obstacles detection
     crtpCommanderHighLevelGoTo(position.x, position.y, position.z, 0, update_time, true);
 }
 
