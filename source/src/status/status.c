@@ -22,6 +22,7 @@ void disable_status()
 
 void set_color(StatusColor color)
 {
+    ledClearAll();
     ledSet(color, true);
 }
 

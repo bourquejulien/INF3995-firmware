@@ -12,49 +12,54 @@
 #include "configblock.h"
 #include "usec_time.h"
 
+#define LIST_SIZE 10
+
 typedef struct
 {
-    uint8_t id;
+    int8_t id;
     float distance;
+    float received_time;
 } DistanceData;
+
+#define SIZE_OFF_PACKET sizeof(DistanceData)
 
 static bool is_enabled;
 static float sync_update_time;
 
 static float last_clock;
-static DistanceData min_data;
-static DistanceData max_data;
+static uint8_t color;
+static DistanceData drones_data[LIST_SIZE];
 
-static void data_handler(P2PPacket *p)
+static void data_handler(P2PPacket *packet)
 {
     static DistanceData data;
-    memcpy(&data, &p->data[0], sizeof(DistanceData));
+    memcpy(&data, &packet->data[0], SIZE_OFF_PACKET);
 
-    if (data.distance < min_data.distance || data.id == min_data.id)
+    for (int i = 0; i < LIST_SIZE; ++i)
     {
-        min_data = data;
+        if (drones_data[i].id == data.id)
+        {
+            drones_data[i].distance = data.distance;
+            drones_data[i].received_time = usecTimestamp();
+            return;
+        }
     }
 
-    if (data.distance > max_data.distance || data.id == max_data.id)
+    float oldest_timestamp = FLT_MAX;
+    int target_index = 0;
+
+    for (int i = 0; i < LIST_SIZE; ++i)
     {
-        max_data = data;
+        if (drones_data[i].received_time < oldest_timestamp)
+        {
+            oldest_timestamp = drones_data[i].received_time;
+            target_index = i;
+        }
     }
 
-    float current_distance = get_distance_from_start();
-
-    if (current_distance < min_data.distance)
-    {
-        set_color(StatusGreen);
-        return;
-    }
-
-    if (current_distance > max_data.distance)
-    {
-        set_color(StatusRed);
-        return;
-    }
-
-    set_color(StatusBlue);
+    drones_data[target_index].id = data.id;
+    drones_data[target_index].distance = data.distance;
+    drones_data[target_index].received_time = usecTimestamp();
 }
 
 static uint8_t get_id()
@@ -76,22 +81,52 @@ static void set_status()
     }
 }
 
-static void synchronize()
+static void render_color()
 {
-    if (!is_enabled)
+    static uint8_t step;
+    step = (step + 1) % LIST_SIZE;
+
+    if (step >= color)
     {
+        set_color(StatusGreen);
         return;
     }
 
+    set_color(StatusRed);
+}
+
+static void update_color()
+{
+    int connected_drone_count = 0;
+    int closer_drones_count = 0;
+    float current_distance = get_distance_from_start();
+
+    for (int i = 0; i < LIST_SIZE; ++i)
+    {
+        if (drones_data[i].id >= 0)
+        {
+            ++connected_drone_count;
+            if (drones_data[i].distance < current_distance)
+            {
+                ++closer_drones_count;
+            }
+        }
+    }
+
+    color = (uint8_t) LIST_SIZE * ((closer_drones_count * 1.0) / ((connected_drone_count) * 1.0));
+}
+
+static void send_data()
+{
     static DistanceData data;
     data.distance = get_distance_from_start();
     data.id = get_id();
 
     static P2PPacket packet;
     packet.port = 0;
-    packet.size = sizeof(DistanceData);
+    packet.size = SIZE_OFF_PACKET;
 
-    memcpy(&packet.data, &data, packet.size);
+    memcpy(&(packet.data), &data, packet.size);
     radiolinkSendP2PPacketBroadcast(&packet);
 }
 
@@ -100,14 +135,17 @@ void init_synchronization()
     p2pRegisterCB(data_handler);
 
     is_enabled = false;
-    sync_update_time = 2000;
+    color = 0.0;
+    sync_update_time = 500;
 
     last_clock = usecTimestamp();
 
-    min_data.id = 0;
-    min_data.distance = FLT_MAX;
-    max_data.id = 0;
-    max_data.distance = 0;
+    for (int i = 0; i < LIST_SIZE; ++i)
+    {
+        drones_data[i].id = -1;
+        drones_data[i].distance = 0;
+        drones_data[i].received_time = 0.0;
+    }
 }
 
 void synchronize_drones()
@@ -116,7 +154,17 @@ void synchronize_drones()
     if(time_since_update_ms > sync_update_time)
     {
         last_clock = usecTimestamp();
-        synchronize();
+
+        if (is_enabled)
+        {
+            update_color();
+            send_data();
+        }
+    }
+
+    if(is_enabled)
+    {
+        render_color();
     }
 }
 

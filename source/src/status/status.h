@@ -2,9 +2,9 @@
 
 typedef enum
 {
-    StatusBlue = 0,
-    StatusGreen,
-    StatusRed
+    StatusBlue = 5,
+    StatusGreen = 3,
+    StatusRed = 4
 } StatusColor;
 
 void enable_status();
