@@ -20,11 +20,6 @@ int receive_command(struct CommandPacketRX* RX)
 
 static enum State get_state(struct CommandPacketRX* RX)
 {
-    if (supervisorIsTumbled())
-    {
-        return Crashed;
-    }
-
     switch (RX->command_id)
     {
     case 0:
@@ -42,6 +37,16 @@ static enum State get_state(struct CommandPacketRX* RX)
     }
 }
 
+bool checkCrashedState(enum State* state)
+{
+    bool crashed = supervisorIsTumbled();
+    if(crashed))
+    {
+        *state = Crashed;
+    }
+    return crashed;
+}
+
 void handle_state(struct CommandPacketRX* RX, enum State* state)
 {
     vTaskDelay(M2T(10));
@@ -50,11 +55,17 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     {
     case Idle:
     {
+        if(checkCrashedState(state)){
+            break;
+        }
         *state = get_state(RX);
         break;
     }
     case Takeoff:
     {
+        if(checkCrashedState(state)){
+            break;
+        }
         if (start_mission(RX->command_param_value))
         {
             *state = Exploration;
@@ -63,6 +74,9 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     }
     case Exploration:
     {
+        if(checkCrashedState(state)){
+            break;
+        }
         int next_state = get_state(RX);
         if (next_state == Landing || next_state == EmergencyStop)
         {
@@ -73,6 +87,9 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     }
     case Landing:
     {
+        if(checkCrashedState(state)){
+            break;
+        }
         end_mission(2);
         *state = Idle;
         break;
@@ -91,10 +108,13 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     }
     case Crashed:
     {
-        force_end_mission();
-
-        // qqchose
-        // attendre nouvel état, si nouvel état arrive, deset état crashed
+        if(checkCrashedState(state)){
+            break;
+        }
+        else
+        {
+            *state = get_state(RX);
+        }
         break;
     }
     default:
