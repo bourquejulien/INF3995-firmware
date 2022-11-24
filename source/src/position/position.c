@@ -20,6 +20,8 @@ static float get_x() { return logGetFloat(logIdStateEstimateX); }
 static float get_y() { return logGetFloat(logIdStateEstimateY); }
 static float get_z() { return logGetFloat(logIdStateEstimateZ); }
 
+static struct Vec3 initial_position;
+
 static float random_range(float min, float max)
 {
     float scale = rand() / (float) RAND_MAX;
@@ -74,6 +76,7 @@ void init_position()
     logIdStateEstimateZ = logGetVarId("stateEstimate", "z");
 
     srand(get_distance(FrontDirection) + get_distance(BackDirection));
+    get_current_position(&initial_position);
 }
 
 void start_position(float z_trigger)
@@ -86,6 +89,18 @@ void get_current_position(struct Vec3* position)
     position->x = get_x();
     position->y = get_y();
     position->z = get_z();
+}
+
+float get_distance_from_start()
+{
+    static struct Vec3 position;
+    get_current_position(&position);
+
+    position.x = position.x - initial_position.x;
+    position.y = position.y - initial_position.y;
+    position.z = position.z - initial_position.z;
+
+    return sqrt(pow(position.x, 2) + pow(position.y, 2) + pow(position.z, 2));
 }
 
 bool get_next_position(struct Vec3* position, float distance, float zdistance)

@@ -12,6 +12,7 @@
 #include "controller/controller.h"
 #include "position/position.h"
 #include "status/status.h"
+#include "synchronization/synchronization.h"
 
 #define DEBUG_MODULE "MAIN"
 
@@ -31,9 +32,10 @@ void appMain()
         ASSERT_FAILED();
     }
 
-    init_position();
-
     initUsecTimer();
+    init_position();
+    init_synchronization();
+
     uint64_t  last_clock = usecTimestamp();
 
     DEBUG_PRINT("INF3995 module initialized\n");
@@ -46,6 +48,7 @@ void appMain()
         }
 
         handle_state(&CommandRX, &State);
+        synchronize_drones();
 
         uint64_t time_since_update_ms = ((usecTimestamp() - last_clock) / 1000);
 
