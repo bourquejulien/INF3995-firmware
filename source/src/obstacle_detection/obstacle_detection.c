@@ -17,7 +17,7 @@ bool get_triggered_distances(float distances[], float trigger_distance, float z_
 {
     bool is_triggered = false;
 
-    for (int direction = FrontDirection; direction <= UpDirection; ++direction)
+    for (int direction = FrontDirection; direction <= RightDirection; ++direction)
     {
         float distance = get_distance(direction);
 
@@ -29,14 +29,6 @@ bool get_triggered_distances(float distances[], float trigger_distance, float z_
 
         distances[direction] = distance;
         is_triggered = true;
-    }
-
-    float down_distance = get_distance(DownDirection);
-
-    if (down_distance <= z_trigger)
-    {
-        distances[DownDirection] = down_distance;
-        return true;
     }
 
     distances[DownDirection] = 0;
