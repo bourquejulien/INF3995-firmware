@@ -18,6 +18,7 @@ WORKDIR /base
 
 COPY . .
 
+RUN cd source && mkdir build && echo "{\"tag\": \"105\"}" >> build/build_info.json
 RUN cd source && \
     make -j $(nproc)
 
