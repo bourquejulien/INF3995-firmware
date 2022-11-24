@@ -97,7 +97,7 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
         else
         {
             // Le drone ne sera pas nécessairement Idle, mais l'état Idle dans la machine à états pourra décider à la prochaine itération de l'état à prendre
-            *state = Idle 
+            *state = Idle;
         }
         break;
     }
@@ -108,6 +108,7 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
             *state = Idle;
         }
         break;
+    }
     default:
     {
         *state = Idle;
