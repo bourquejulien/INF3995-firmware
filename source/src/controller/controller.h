@@ -16,6 +16,7 @@ enum State
     Landing,
     EmergencyStop,
     ChooseAngle,
+    Crashing,
     Crashed
 };
 

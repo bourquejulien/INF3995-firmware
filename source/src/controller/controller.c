@@ -30,8 +30,6 @@ static enum State get_state(struct CommandPacketRX* RX)
         return Landing;
     case 3:
         return EmergencyStop;
-    case 4:
-        return Crashed;
     default:
         return Idle;
     }
@@ -89,16 +87,27 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
         *state = Idle;
         break;
     }
+    case Crashing:
+    {
+        if(supervisorIsTumbled())
+        {
+            force_end_mission();
+            *state = Crashed;
+        }
+        else
+        {
+            // Le drone ne sera pas nécessairement Idle, mais l'état Idle dans la machine à états pourra décider à la prochaine itération de l'état à prendre
+            *state = Idle 
+        }
+        break;
+    }
     case Crashed:
     {
-        force_end_mission();
         if(!supervisorIsTumbled())
         {
             *state = Idle;
         }
-        *state = handle_state(RX, *state);
         break;
-    }
     default:
     {
         *state = Idle;
