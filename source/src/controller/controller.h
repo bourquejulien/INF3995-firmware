@@ -15,7 +15,9 @@ enum State
     Exploration,
     Landing,
     EmergencyStop,
-    ChooseAngle
+    ChooseAngle,
+    Crashing,
+    Crashed
 };
 
 int receive_command(struct CommandPacketRX* RX);

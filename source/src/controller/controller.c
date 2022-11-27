@@ -9,6 +9,7 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "supervisor.h"
 
 #define DEBUG_MODULE "CONTROLLER"
 
@@ -37,6 +38,11 @@ static enum State get_state(struct CommandPacketRX* RX)
 void handle_state(struct CommandPacketRX* RX, enum State* state)
 {
     vTaskDelay(M2T(10));
+
+    if(supervisorIsTumbled())
+    {
+        *state = Crashed;
+    }
 
     switch (*state)
     {
@@ -79,6 +85,28 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     {
         identify_drone();
         *state = Idle;
+        break;
+    }
+    case Crashing:
+    {
+        if(supervisorIsTumbled())
+        {
+            force_end_mission();
+            *state = Crashed;
+        }
+        else
+        {
+            // Le drone ne sera pas nécessairement Idle, mais l'état Idle dans la machine à états pourra décider à la prochaine itération de l'état à prendre
+            *state = Idle;
+        }
+        break;
+    }
+    case Crashed:
+    {
+        if(!supervisorIsTumbled())
+        {
+            *state = Idle;
+        }
         break;
     }
     default:
