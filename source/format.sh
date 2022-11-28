@@ -3,7 +3,8 @@
 shopt -s globstar
 
 style=file
-regex="**/*.c **/*.h"
+base=src
+regex="$base/**/*.c $base/**/*.h"
 
 while [[ $# -gt 0 ]]; do
   case $1 in
