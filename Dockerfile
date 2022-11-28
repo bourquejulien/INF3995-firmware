@@ -43,7 +43,7 @@ FROM ubuntu:focal AS lint
 RUN apt update && apt install -y clang-format
 
 WORKDIR /app/lint
-COPY --from=firmware_build /base/source ./
+COPY ./source ./
 
 ENTRYPOINT ["bash", "format.sh"]
 
