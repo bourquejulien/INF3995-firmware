@@ -38,3 +38,12 @@ ENV PATH="/base/remote_compiler/venv/bin:$PATH"
 RUN python requirements.py
 
 ENTRYPOINT ["python", "app.py", "5003"]
+
+FROM ubuntu:focal AS lint
+RUN apt update && apt install -y clang-format
+
+WORKDIR /app/lint
+COPY ./source ./
+
+ENTRYPOINT ["bash", "format.sh"]
+
