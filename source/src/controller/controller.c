@@ -71,8 +71,9 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     }
     case Landing:
     {
-        end_mission(2);
-        *state = Idle;
+        if (end_mission()) {
+            *state = Idle;
+        }
         break;
     }
     case EmergencyStop:

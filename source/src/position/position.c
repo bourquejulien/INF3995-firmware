@@ -98,9 +98,8 @@ float get_distance_from_start()
 
     position.x = position.x - initial_position.x;
     position.y = position.y - initial_position.y;
-    position.z = position.z - initial_position.z;
 
-    return sqrt(pow(position.x, 2) + pow(position.y, 2) + pow(position.z, 2));
+    return sqrt(pow(position.x, 2) + pow(position.y, 2));
 }
 
 bool get_next_position(struct Vec3* position, float distance, float zdistance)
@@ -115,6 +114,31 @@ bool get_next_position(struct Vec3* position, float distance, float zdistance)
     if (is_triggered)
     {
         angle = get_angle(distances);
+    }
+
+    position->x = (float)cos(angle) * distance;
+    position->y = (float)sin(angle) * distance;
+    position->z = position->z * zdistance;
+
+    return false;
+}
+
+bool get_return_position(struct Vec3* position, float distance, float zdistance)
+{
+    float distances[ObstacleDirectionEND];
+    bool is_triggered = get_triggered_distances(distances, distance_trigger, z_trigger);
+
+    position->x = 0.0;
+    position->y = 0.0;
+    position->z = 0.0;
+
+    if (is_triggered)
+    {
+        angle = get_angle(distances);
+    } 
+    else 
+    {
+        angle = atan2(initial_position.y - get_y(), initial_position.x - get_x());
     }
 
     position->x = (float)cos(angle) * distance;
