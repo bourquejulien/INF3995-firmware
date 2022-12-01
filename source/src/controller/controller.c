@@ -11,7 +11,12 @@
 #include "task.h"
 #include "supervisor.h"
 
+#include "log.h"
+
 #define DEBUG_MODULE "CONTROLLER"
+
+static float min_voltage = 3.0; // Voltage representing low battery. Should be 3.77 according to voltage table but this seems too high in practice.
+static int battery_counter = 0;
 
 int receive_command(struct CommandPacketRX* RX)
 {
@@ -44,34 +49,47 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
         *state = Crashed;
     }
 
+    int next_state = get_state(RX);
+    if (next_state == EmergencyStop)
+    {
+        *state = next_state;
+    }
+
     switch (*state)
     {
     case Idle:
     {
-        *state = get_state(RX);
+        *state = next_state;
+        
+        if (low_battery() && next_state != Identify) 
+        {
+            *state = Idle;
+        }
         break;
     }
     case Takeoff:
     {
         if (start_mission(RX->command_param_value))
         {
+            battery_counter = 0;
             *state = Exploration;
         }
         break;
     }
     case Exploration:
     {
-        int next_state = get_state(RX);
-        if (next_state == Landing || next_state == EmergencyStop)
+        if (next_state == Landing || low_battery())
         {
-            *state = next_state;
+            *state = Landing;
         }
+
         update_mission();
         break;
     }
     case Landing:
     {
-        if (end_mission()) {
+        if (end_mission()) 
+        {
             *state = Idle;
         }
         break;
@@ -122,4 +140,21 @@ void update_status(enum State* state)
 {
     update_telemetrics_data(*state);
     update_telemetrics_map();
+}
+
+bool low_battery()
+{
+    logVarId_t vbatid = logGetVarId("pm", "vbat");
+    float vbat = logGetFloat(vbatid);
+    if (vbat < min_voltage) 
+    {
+        battery_counter++;
+    }
+    else
+    {
+        battery_counter = 0;
+    }
+
+    // Battery level must stay below threshold for 10 consecutive ticks to avoid false positive due to fluctuations. 
+    return battery_counter >= 10;
 }

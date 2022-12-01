@@ -60,7 +60,8 @@ static float get_angle(float* distances)
     {
         // If no walls are close, i.e. the drone just took off, choose a completely random direction 
         return random_range(0.0, M_PI * 2.0);
-    } else 
+    } 
+    else 
     {
         // Else, find the angle of the vector above
         float angleRange = M_PI_4;
@@ -82,6 +83,7 @@ void init_position()
 void start_position(float z_trigger)
 {
     z_trigger = z_trigger;
+    get_current_position(&initial_position);
 }
 
 void get_current_position(struct Vec3* position)
