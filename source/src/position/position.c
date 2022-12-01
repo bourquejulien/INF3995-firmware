@@ -104,7 +104,7 @@ float get_distance_from_start()
     return sqrt(pow(position.x, 2) + pow(position.y, 2));
 }
 
-bool get_next_position(struct Vec3* position, float distance, float zdistance)
+void get_next_position(struct Vec3* position, float distance, float zdistance)
 {
     float distances[ObstacleDirectionEND];
     bool is_triggered = get_triggered_distances(distances, distance_trigger, z_trigger);
@@ -121,11 +121,9 @@ bool get_next_position(struct Vec3* position, float distance, float zdistance)
     position->x = (float)cos(angle) * distance;
     position->y = (float)sin(angle) * distance;
     position->z = position->z * zdistance;
-
-    return false;
 }
 
-bool get_return_position(struct Vec3* position, float distance, float zdistance)
+void get_return_position(struct Vec3* position, float distance, float zdistance)
 {
     float distances[ObstacleDirectionEND];
     bool is_triggered = get_triggered_distances(distances, distance_trigger, z_trigger);
@@ -146,8 +144,6 @@ bool get_return_position(struct Vec3* position, float distance, float zdistance)
     position->x = (float)cos(angle) * distance;
     position->y = (float)sin(angle) * distance;
     position->z = position->z * zdistance;
-
-    return false;
 }
 
 PARAM_GROUP_START(app)

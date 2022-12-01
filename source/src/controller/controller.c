@@ -46,10 +46,11 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
 
     if(supervisorIsTumbled())
     {
-        *state = Crashed;
+        *state = Crashing;
     }
 
     int next_state = get_state(RX);
+
     if (next_state == EmergencyStop)
     {
         *state = next_state;
@@ -115,7 +116,7 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
         }
         else
         {
-            // Le drone ne sera pas nécessairement Idle, mais l'état Idle dans la machine à états pourra décider à la prochaine itération de l'état à prendre
+            // Drone not necessarily idle, but idle state allows the drone to choose the next appropriate state
             *state = Idle;
         }
         break;
@@ -146,6 +147,7 @@ bool low_battery()
 {
     logVarId_t vbatid = logGetVarId("pm", "vbat");
     float vbat = logGetFloat(vbatid);
+
     if (vbat < min_voltage) 
     {
         battery_counter++;
