@@ -66,19 +66,19 @@ void update_mission()
 }
 
 // Returns true if the drone is in the process of landing, false if it is still moving towards the start
-bool end_mission()
+bool return_to_base()
 {
     if (!isGoTo_finished())
     {
         return false;
     }
 
-    if (get_distance_from_start() < 0.5f)
+    if (get_distance_from_start() < 0.4f)
     {
-        crtpCommanderHighLevelLand(0, update_time);
-        reset();
+        end_mission();
         return true;
-    } else 
+    } 
+    else 
     {
         struct Vec3 position;
         get_return_position(&position, walk_distance, 0);
@@ -88,6 +88,12 @@ bool end_mission()
         crtpCommanderHighLevelGoTo(position.x, position.y, position.z, 0, update_time, true);
         return false;
     }
+}
+
+void end_mission()
+{
+    crtpCommanderHighLevelLand(0, update_time);
+    reset();
 }
 
 void force_end_mission()

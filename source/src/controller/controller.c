@@ -35,6 +35,8 @@ static enum State get_state(struct CommandPacketRX* RX)
         return Landing;
     case 3:
         return EmergencyStop;
+    case 4: 
+        return Return;
     default:
         return Idle;
     }
@@ -79,7 +81,11 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     }
     case Exploration:
     {
-        if (next_state == Landing || low_battery())
+        if (next_state == Return || low_battery())
+        {
+            *state = Return;
+        }
+        else if (next_state == Landing)
         {
             *state = Landing;
         }
@@ -89,7 +95,13 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     }
     case Landing:
     {
-        if (end_mission()) 
+        end_mission();
+        *state = Idle;
+        break;
+    }
+    case Return:
+    {
+        if (return_to_base()) 
         {
             *state = Idle;
         }
