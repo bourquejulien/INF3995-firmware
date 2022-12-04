@@ -21,8 +21,9 @@ git submodule update --recursive --jobs 4
 ```
 
 ### Procédure - Flash
+
 1. Entrer dans le répertoire cloné et lancer la commande ``docker compose build``.
-2. Placer le drone à programme en mode "bootloader" en gardant le bouton de mise en marche appuyé durant 3 secondes.
+2. Placer le drone à programmer en mode "bootloader" en gardant le bouton de mise en marche appuyé durant 3 secondes.
 3. Flasher les drones avec ```docker compose up```.
 
 ### Procédure - Remote compiler
@@ -30,6 +31,6 @@ git submodule update --recursive --jobs 4
 Lancer les commandes suivantes :
 
 ```bash
-docker build --target=final  -t remote_compiler .
+docker build --target=final -t remote_compiler .
 docker run -p 5003:5003 remote_compiler
 ```

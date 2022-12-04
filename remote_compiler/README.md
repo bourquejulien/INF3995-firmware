@@ -2,14 +2,14 @@
 
 Ce répertoire contient le code du "remote compiler" développé dans le cadre du projet.
 
-Le petit module permet de compiler le code du firmware à l'aide de commandes GRPC. Les fichiers peuvent également être modifiés.
+Le petit module permet de compiler le code du firmware à l'aide de commandes gRPC. Les fichiers peuvent également être modifiés.
 
 Note : Les fichiers sont d'abord copiés dans un répertoire temporaire avant d'être modifiés, les modifications sont donc uniquement préservées durant l'exécution du programme.
 
 
 ## Prérequis
 
-Il est nécessaire d'installer les dépendances :
+Il est nécessaire d'installer les dépendances à l'aide des instructions suivantes :
 
 ```bash
 python3 -m venv venv
