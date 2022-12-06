@@ -21,6 +21,8 @@ static float distance_trigger_z = 0;
 
 static float walk_distance;
 
+const float return_threshold = 0.5f;
+
 
 bool isGoTo_finished() { return crtpCommanderHighLevelIsTrajectoryFinished(); }
 
@@ -73,7 +75,7 @@ bool return_to_base()
         return false;
     }
 
-    if (get_distance_from_start() < 0.4f)
+    if (get_distance_from_start() < return_threshold)
     {
         end_mission();
         return true;

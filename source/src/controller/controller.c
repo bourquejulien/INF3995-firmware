@@ -15,7 +15,8 @@
 
 #define DEBUG_MODULE "CONTROLLER"
 
-static float min_voltage = 3.0; // Voltage representing low battery. Should be 3.77 according to voltage table but this seems too high in practice.
+const float min_voltage = 3.0f; // Voltage representing low battery. Should be 3.77 according to voltage table but this seems too high in practice.
+const int battery_counter_limit = 10; 
 static int battery_counter = 0;
 
 int receive_command(struct CommandPacketRX* RX)
@@ -170,5 +171,5 @@ bool low_battery()
     }
 
     // Battery level must stay below threshold for 10 consecutive ticks to avoid false positive due to fluctuations. 
-    return battery_counter >= 10;
+    return battery_counter >= battery_counter_limit;
 }
