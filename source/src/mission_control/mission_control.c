@@ -21,6 +21,8 @@ static float distance_trigger_z = 0;
 
 static float walk_distance;
 
+const float return_threshold = 0.5f;
+
 
 bool isGoTo_finished() { return crtpCommanderHighLevelIsTrajectoryFinished(); }
 
@@ -63,6 +65,31 @@ void update_mission()
     DEBUG_PRINT("GOTO: (%f, %f, %f)\n", (double)position.x, (double)position.y, (double)position.z);
 
     crtpCommanderHighLevelGoTo(position.x, position.y, position.z, 0, update_time, true);
+}
+
+// Returns true if the drone is in the process of landing, false if it is still moving towards the start
+bool return_to_base()
+{
+    if (!isGoTo_finished())
+    {
+        return false;
+    }
+
+    if (get_distance_from_start() < return_threshold)
+    {
+        end_mission();
+        return true;
+    } 
+    else 
+    {
+        struct Vec3 position;
+        get_return_position(&position, walk_distance, 0);
+
+        DEBUG_PRINT("GOTO: (%f, %f, %f)\n", (double)position.x, (double)position.y, (double)position.z);
+
+        crtpCommanderHighLevelGoTo(position.x, position.y, position.z, 0, update_time, true);
+        return false;
+    }
 }
 
 void end_mission()
