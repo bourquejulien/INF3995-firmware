@@ -9,6 +9,8 @@ void update_telemetrics_data(int state)
     data.type = 0;
     data.state = state;
     get_current_position(&data.position);
+    data.battery_level = get_battery();
+    
 
     appchannelSendDataPacket(&data, sizeof(data));
 }

@@ -160,8 +160,7 @@ void update_status(enum State* state)
 
 bool low_battery()
 {
-    logVarId_t vbatid = logGetVarId("pm", "vbat");
-    float vbat = logGetFloat(vbatid);
+    float vbat = get_battery();
 
     if (vbat < min_voltage)
     {
@@ -175,4 +174,10 @@ bool low_battery()
     // Battery level must stay below threshold for 10 consecutive ticks to avoid false positive due
     // to fluctuations.
     return battery_counter >= battery_counter_limit;
+}
+
+float get_battery()
+{
+    logVarId_t vbatid = logGetVarId("pm", "vbat");
+    return logGetFloat(vbatid);
 }

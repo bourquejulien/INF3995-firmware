@@ -2,12 +2,14 @@
 
 #include "../obstacle_detection/obstacle_detection.h"
 #include "../position/position.h"
+#include "../controller/controller.h"
 
 struct Telemetrics
 {
     uint8_t type;
     uint8_t state;
     struct Vec3 position;
+    float battery_level;
 } __attribute__((packed));
 
 struct MapData
