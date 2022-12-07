@@ -1,8 +1,8 @@
 #pragma once
 
+#include "../controller/controller.h"
 #include "../obstacle_detection/obstacle_detection.h"
 #include "../position/position.h"
-#include "../controller/controller.h"
 
 struct Telemetrics
 {
