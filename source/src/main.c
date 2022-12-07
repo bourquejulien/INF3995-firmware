@@ -36,7 +36,7 @@ void appMain()
     init_position();
     init_synchronization();
 
-    uint64_t  last_clock = usecTimestamp();
+    uint64_t last_clock = usecTimestamp();
 
     DEBUG_PRINT("INF3995 module initialized\n");
 
@@ -52,7 +52,7 @@ void appMain()
 
         uint64_t time_since_update_ms = ((usecTimestamp() - last_clock) / 1000);
 
-        if(time_since_update_ms > telemetric_update)
+        if (time_since_update_ms > telemetric_update)
         {
             last_clock = usecTimestamp();
             update_status(&State);

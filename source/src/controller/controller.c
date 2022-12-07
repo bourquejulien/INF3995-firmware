@@ -8,15 +8,16 @@
 #include <string.h>
 
 #include "FreeRTOS.h"
-#include "task.h"
 #include "supervisor.h"
+#include "task.h"
 
 #include "log.h"
 
 #define DEBUG_MODULE "CONTROLLER"
 
-const float min_voltage = 3.0f; // Voltage representing low battery. Should be 3.77 according to voltage table but this seems too high in practice.
-const int battery_counter_limit = 10; 
+const float min_voltage = 3.0f; // Voltage representing low battery. Should be 3.77 according to
+                                // voltage table but this seems too high in practice.
+const int battery_counter_limit = 10;
 static int battery_counter = 0;
 
 int receive_command(struct CommandPacketRX* RX)
@@ -36,7 +37,7 @@ static enum State get_state(struct CommandPacketRX* RX)
         return Landing;
     case 3:
         return EmergencyStop;
-    case 4: 
+    case 4:
         return Return;
     default:
         return Idle;
@@ -47,7 +48,7 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
 {
     vTaskDelay(M2T(10));
 
-    if(supervisorIsTumbled())
+    if (supervisorIsTumbled())
     {
         *state = Crashing;
     }
@@ -64,8 +65,8 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     case Idle:
     {
         *state = next_state;
-        
-        if (low_battery() && next_state != Identify) 
+
+        if (low_battery() && next_state != Identify)
         {
             *state = Idle;
         }
@@ -102,7 +103,7 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     }
     case Return:
     {
-        if (return_to_base()) 
+        if (return_to_base())
         {
             *state = Idle;
         }
@@ -122,21 +123,22 @@ void handle_state(struct CommandPacketRX* RX, enum State* state)
     }
     case Crashing:
     {
-        if(supervisorIsTumbled())
+        if (supervisorIsTumbled())
         {
             force_end_mission();
             *state = Crashed;
         }
         else
         {
-            // Drone not necessarily idle, but idle state allows the drone to choose the next appropriate state
+            // Drone not necessarily idle, but idle state allows the drone to choose the next
+            // appropriate state
             *state = Idle;
         }
         break;
     }
     case Crashed:
     {
-        if(!supervisorIsTumbled())
+        if (!supervisorIsTumbled())
         {
             *state = Idle;
         }
@@ -161,7 +163,7 @@ bool low_battery()
     logVarId_t vbatid = logGetVarId("pm", "vbat");
     float vbat = logGetFloat(vbatid);
 
-    if (vbat < min_voltage) 
+    if (vbat < min_voltage)
     {
         battery_counter++;
     }
@@ -170,6 +172,7 @@ bool low_battery()
         battery_counter = 0;
     }
 
-    // Battery level must stay below threshold for 10 consecutive ticks to avoid false positive due to fluctuations. 
+    // Battery level must stay below threshold for 10 consecutive ticks to avoid false positive due
+    // to fluctuations.
     return battery_counter >= battery_counter_limit;
 }

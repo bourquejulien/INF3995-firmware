@@ -1,3 +1,5 @@
+ESTIMATOR=kalman
+
 CRAZYFLIE_BASE := ../crazyflie-firmware
 
 #

@@ -2,7 +2,6 @@
 
 #include "app_channel.h"
 
-
 void update_telemetrics_data(int state)
 {
     struct Telemetrics data;
@@ -16,7 +15,7 @@ void update_telemetrics_data(int state)
 
 void update_telemetrics_map()
 {
-    float distances [ObstacleDirectionEND];
+    float distances[ObstacleDirectionEND];
     get_distances(distances);
 
     struct MapData data;
@@ -28,6 +27,6 @@ void update_telemetrics_map()
         data.distances[i] = distances[i];
     }
 
-    get_current_position(&data.position);    
+    get_current_position(&data.position);
     appchannelSendDataPacket(&data, sizeof(data));
 }

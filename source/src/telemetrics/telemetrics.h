@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../position/position.h"
 #include "../obstacle_detection/obstacle_detection.h"
+#include "../position/position.h"
 
 struct Telemetrics
 {
