@@ -1,15 +1,15 @@
 #include "synchronization.h"
-#include "../status/status.h"
 #include "../position/position.h"
+#include "../status/status.h"
 
-#include <string.h>
 #include <float.h>
 #include <stdbool.h>
+#include <string.h>
 
+#include "configblock.h"
 #include "debug.h"
 #include "param.h"
 #include "radiolink.h"
-#include "configblock.h"
 #include "usec_time.h"
 
 #define LIST_SIZE 10
@@ -30,7 +30,7 @@ static float last_clock;
 static uint8_t color;
 static DistanceData drones_data[LIST_SIZE];
 
-static void data_handler(P2PPacket *packet)
+static void data_handler(P2PPacket* packet)
 {
     static DistanceData data;
     memcpy(&data, &packet->data[0], SIZE_OFF_PACKET);
@@ -113,7 +113,7 @@ static void update_color()
         }
     }
 
-    color = (uint8_t) LIST_SIZE * ((closer_drones_count * 1.0) / ((connected_drone_count) * 1.0));
+    color = (uint8_t)LIST_SIZE * ((closer_drones_count * 1.0) / ((connected_drone_count)*1.0));
 }
 
 static void send_data()
@@ -151,7 +151,7 @@ void init_synchronization()
 void synchronize_drones()
 {
     uint64_t time_since_update_ms = ((usecTimestamp() - last_clock) / 1000);
-    if(time_since_update_ms > sync_update_time)
+    if (time_since_update_ms > sync_update_time)
     {
         last_clock = usecTimestamp();
 
@@ -162,7 +162,7 @@ void synchronize_drones()
         }
     }
 
-    if(is_enabled)
+    if (is_enabled)
     {
         render_color();
     }

@@ -24,8 +24,8 @@ static struct Vec3 initial_position;
 
 static float random_range(float min, float max)
 {
-    float scale = rand() / (float) RAND_MAX;
-    return min + scale * ( max - min );
+    float scale = rand() / (float)RAND_MAX;
+    return min + scale * (max - min);
 }
 
 static float get_angle(float* distances)
@@ -55,13 +55,12 @@ static float get_angle(float* distances)
         wallsClose++;
     }
 
-    
-    if (wallsClose == 0) 
+    if (wallsClose == 0)
     {
-        // If no walls are close, i.e. the drone just took off, choose a completely random direction 
+        // If no walls are close, i.e. the drone just took off, choose a completely random direction
         return random_range(0.0, M_PI * 2.0);
-    } 
-    else 
+    }
+    else
     {
         // Else, find the angle of the vector above
         float angleRange = M_PI_4;
@@ -135,8 +134,8 @@ void get_return_position(struct Vec3* position, float distance, float zdistance)
     if (is_triggered)
     {
         angle = get_angle(distances);
-    } 
-    else 
+    }
+    else
     {
         angle = atan2(initial_position.y - get_y(), initial_position.x - get_x());
     }

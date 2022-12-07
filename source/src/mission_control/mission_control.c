@@ -10,8 +10,8 @@
 #include "debug.h"
 #include "task.h"
 
-#include "../position/position.h"
 #include "../obstacle_detection/obstacle_detection.h"
+#include "../position/position.h"
 
 static float update_time = 0;
 static float default_z = 0;
@@ -22,7 +22,6 @@ static float distance_trigger_z = 0;
 static float walk_distance;
 
 const float return_threshold = 0.5f;
-
 
 bool isGoTo_finished() { return crtpCommanderHighLevelIsTrajectoryFinished(); }
 
@@ -67,7 +66,8 @@ void update_mission()
     crtpCommanderHighLevelGoTo(position.x, position.y, position.z, 0, update_time, true);
 }
 
-// Returns true if the drone is in the process of landing, false if it is still moving towards the start
+// Returns true if the drone is in the process of landing, false if it is still moving towards the
+// start
 bool return_to_base()
 {
     if (!isGoTo_finished())
@@ -79,13 +79,14 @@ bool return_to_base()
     {
         end_mission();
         return true;
-    } 
-    else 
+    }
+    else
     {
         struct Vec3 position;
         get_return_position(&position, walk_distance, 0);
 
-        DEBUG_PRINT("GOTO: (%f, %f, %f)\n", (double)position.x, (double)position.y, (double)position.z);
+        DEBUG_PRINT(
+            "GOTO: (%f, %f, %f)\n", (double)position.x, (double)position.y, (double)position.z);
 
         crtpCommanderHighLevelGoTo(position.x, position.y, position.z, 0, update_time, true);
         return false;
