@@ -11,8 +11,6 @@
 #include "supervisor.h"
 #include "task.h"
 
-#include "log.h"
-
 #define DEBUG_MODULE "CONTROLLER"
 
 const float min_voltage = 3.0f; // Voltage representing low battery. Should be 3.77 according to
@@ -160,8 +158,7 @@ void update_status(enum State* state)
 
 bool low_battery()
 {
-    logVarId_t vbatid = logGetVarId("pm", "vbat");
-    float vbat = logGetFloat(vbatid);
+    float vbat = get_battery();
 
     if (vbat < min_voltage)
     {

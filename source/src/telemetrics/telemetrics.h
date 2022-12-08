@@ -8,6 +8,7 @@ struct Telemetrics
     uint8_t type;
     uint8_t state;
     struct Vec3 position;
+    float battery_level;
 } __attribute__((packed));
 
 struct MapData
@@ -19,3 +20,4 @@ struct MapData
 
 void update_telemetrics_data(int state);
 void update_telemetrics_map();
+float get_battery();
