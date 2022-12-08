@@ -11,8 +11,6 @@
 #include "supervisor.h"
 #include "task.h"
 
-
-
 #define DEBUG_MODULE "CONTROLLER"
 
 const float min_voltage = 3.0f; // Voltage representing low battery. Should be 3.77 according to
