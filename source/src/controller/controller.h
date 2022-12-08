@@ -27,4 +27,3 @@ int receive_command(struct CommandPacketRX* RX);
 void handle_state(struct CommandPacketRX* RX, enum State* state);
 void update_status(enum State* state);
 bool low_battery();
-float get_battery();

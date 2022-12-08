@@ -11,7 +11,7 @@
 #include "supervisor.h"
 #include "task.h"
 
-#include "log.h"
+
 
 #define DEBUG_MODULE "CONTROLLER"
 
@@ -174,10 +174,4 @@ bool low_battery()
     // Battery level must stay below threshold for 10 consecutive ticks to avoid false positive due
     // to fluctuations.
     return battery_counter >= battery_counter_limit;
-}
-
-float get_battery()
-{
-    logVarId_t vbatid = logGetVarId("pm", "vbat");
-    return logGetFloat(vbatid);
 }

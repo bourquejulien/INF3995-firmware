@@ -2,6 +2,8 @@
 
 #include "app_channel.h"
 
+#include "log.h"
+
 void update_telemetrics_data(int state)
 {
     struct Telemetrics data;
@@ -30,4 +32,10 @@ void update_telemetrics_map()
 
     get_current_position(&data.position);
     appchannelSendDataPacket(&data, sizeof(data));
+}
+
+float get_battery()
+{
+    logVarId_t vbatid = logGetVarId("pm", "vbat");
+    return logGetFloat(vbatid);
 }

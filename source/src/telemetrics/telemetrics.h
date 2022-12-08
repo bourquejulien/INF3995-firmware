@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../controller/controller.h"
 #include "../obstacle_detection/obstacle_detection.h"
 #include "../position/position.h"
 
@@ -21,3 +20,4 @@ struct MapData
 
 void update_telemetrics_data(int state);
 void update_telemetrics_map();
+float get_battery();
